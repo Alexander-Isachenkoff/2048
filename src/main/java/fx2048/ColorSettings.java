@@ -1,12 +1,13 @@
 package fx2048;
 
+import fx2048.utils.FileUtils;
 import javafx.beans.property.SimpleDoubleProperty;
 import javafx.beans.property.SimpleStringProperty;
-import fx2048.utils.FileUtils;
 
 import javax.xml.bind.annotation.XmlAccessType;
 import javax.xml.bind.annotation.XmlAccessorType;
 import javax.xml.bind.annotation.XmlRootElement;
+import java.io.File;
 
 @XmlRootElement
 @XmlAccessorType(XmlAccessType.PROPERTY)
@@ -24,6 +25,18 @@ public class ColorSettings {
         setSeed(seed);
         setSaturation(saturation);
         setBrightness(brightness);
+    }
+
+    private static ColorSettings createDefault() {
+        return new ColorSettings("1234", 0.3, 0.8);
+    }
+
+    public static ColorSettings loadOrDefault() {
+        if (new File(COLORS_SETTING_FILE).exists()) {
+            return load();
+        } else {
+            return createDefault();
+        }
     }
 
     public static ColorSettings load() {

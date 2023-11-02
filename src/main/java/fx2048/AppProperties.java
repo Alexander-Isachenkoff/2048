@@ -2,6 +2,6 @@ package fx2048;
 
 public class AppProperties {
 
-    public static ColorSettings colorSettings = ColorSettings.load();
+    public static ColorSettings colorSettings = ColorSettings.loadOrDefault();
 
 }
