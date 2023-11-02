@@ -1,0 +1,6 @@
+target/
+*.iml
+.idea/
+/out/
+/colors.xml
+/record.txt

@@ -1,0 +1,70 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.geometry.Insets?>
+<?import javafx.scene.control.Button?>
+<?import javafx.scene.control.Label?>
+<?import javafx.scene.control.Slider?>
+<?import javafx.scene.control.TextField?>
+<?import javafx.scene.layout.ColumnConstraints?>
+<?import javafx.scene.layout.FlowPane?>
+<?import javafx.scene.layout.GridPane?>
+<?import javafx.scene.layout.HBox?>
+<?import javafx.scene.layout.RowConstraints?>
+<?import javafx.scene.layout.VBox?>
+<?import javafx.scene.text.Font?>
+
+<VBox spacing="10.0" stylesheets="@style.css" xmlns="http://javafx.com/javafx/8.0.171" xmlns:fx="http://javafx.com/fxml/1" fx:controller="fx2048.SettingsController">
+   <children>
+      <HBox spacing="10.0">
+         <children>
+            <GridPane hgap="10.0" maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" vgap="10.0">
+              <columnConstraints>
+                <ColumnConstraints minWidth="-Infinity" />
+                <ColumnConstraints hgrow="SOMETIMES" minWidth="-Infinity" prefWidth="145.0" />
+              </columnConstraints>
+              <rowConstraints>
+                <RowConstraints minHeight="-Infinity" />
+                <RowConstraints minHeight="-Infinity" />
+                <RowConstraints minHeight="-Infinity" />
+              </rowConstraints>
+               <children>
+                  <Slider fx:id="saturationSlider" blockIncrement="1.0" majorTickUnit="0.25" max="1.0" showTickLabels="true" showTickMarks="true" value="50.0" GridPane.columnIndex="1" GridPane.rowIndex="1" />
+                  <Slider fx:id="brightnessSlider" majorTickUnit="0.25" max="1.0" showTickLabels="true" showTickMarks="true" value="50.0" GridPane.columnIndex="1" GridPane.rowIndex="2" />
+                  <Label text="Сид" />
+                  <Label text="Насыщенность" GridPane.rowIndex="1" />
+                  <Label text="Яркость" GridPane.rowIndex="2" />
+                  <TextField fx:id="seedField" GridPane.columnIndex="1" />
+               </children>
+            </GridPane>
+            <FlowPane fx:id="numbersPane" prefHeight="240.0" prefWidth="320.0" HBox.hgrow="ALWAYS" />
+         </children>
+      </HBox>
+      <HBox alignment="TOP_RIGHT" spacing="10.0">
+         <children>
+            <HBox HBox.hgrow="ALWAYS">
+               <children>
+                  <Button mnemonicParsing="false" onAction="#onReset" style="-fx-padding: 2 8;" text="Вернуть">
+                     <font>
+                        <Font size="14.0" />
+                     </font>
+                  </Button>
+               </children>
+            </HBox>
+            <Button mnemonicParsing="false" onAction="#onSave" style="-fx-padding: 2 8;" text="Сохранить">
+               <font>
+                  <Font size="14.0" />
+               </font></Button>
+            <Button mnemonicParsing="false" onAction="#onCancel" style="-fx-padding: 2 8;" text="Отмена">
+               <font>
+                  <Font size="14.0" />
+               </font></Button>
+         </children>
+         <padding>
+            <Insets bottom="5.0" />
+         </padding>
+      </HBox>
+   </children>
+   <padding>
+      <Insets bottom="10.0" left="10.0" right="10.0" top="10.0" />
+   </padding>
+</VBox>
