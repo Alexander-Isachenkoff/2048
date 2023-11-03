@@ -1,5 +1,6 @@
 package fx2048;
 
+import fx2048.model.Number;
 import javafx.geometry.Insets;
 import javafx.scene.control.Label;
 import javafx.scene.layout.Background;
@@ -7,7 +8,6 @@ import javafx.scene.layout.BackgroundFill;
 import javafx.scene.layout.CornerRadii;
 import javafx.scene.paint.Color;
 import javafx.scene.text.Font;
-import fx2048.model.Number;
 
 public class NumberTile extends Label {
 
@@ -15,7 +15,7 @@ public class NumberTile extends Label {
     private final ColorSettings colorSettings;
 
     public NumberTile(Number number) {
-        this(number, AppProperties.colorSettings);
+        this(number, AppProperties.getColorSettings());
     }
 
     public NumberTile(Number number, ColorSettings colorSettings) {

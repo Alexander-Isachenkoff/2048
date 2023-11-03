@@ -1,5 +1,7 @@
 package fx2048;
 
+import fx2048.model.GameModel;
+import fx2048.model.Number;
 import javafx.animation.ScaleTransition;
 import javafx.animation.Transition;
 import javafx.animation.TranslateTransition;
@@ -14,8 +16,6 @@ import javafx.scene.layout.Pane;
 import javafx.stage.Modality;
 import javafx.stage.Stage;
 import javafx.util.Duration;
-import fx2048.model.GameModel;
-import fx2048.model.Number;
 
 import java.io.IOException;
 import java.nio.file.Files;
@@ -28,6 +28,7 @@ import java.util.List;
 public class MainController {
 
     private static final int GRID_SIZE = 80;
+    private static final double ANIMATION_DURATION = 80;
     private static final String RECORD_FILE = "record.txt";
     private final ObservableList<Transition> transitions = FXCollections.observableArrayList();
     private final List<Runnable> postTransitionActions = new ArrayList<>();
@@ -46,7 +47,7 @@ public class MainController {
                 NumberTile label = addNumber(number);
                 label.setScaleX(0);
                 label.setScaleY(0);
-                ScaleTransition tt = new ScaleTransition(new Duration(80), label);
+                ScaleTransition tt = new ScaleTransition(new Duration(ANIMATION_DURATION), label);
                 tt.setToX(1);
                 tt.setToY(1);
                 runTransition(tt);
@@ -71,7 +72,9 @@ public class MainController {
         gamePane.sceneProperty().addListener((observable, oldValue, scene) -> {
             scene.setOnKeyPressed(event -> {
                 if (!transitions.isEmpty()) {
-                    return;
+                    for (Transition transition : transitions) {
+                        transition.jumpTo(transition.getTotalDuration());
+                    }
                 }
                 switch (event.getCode()) {
                     case UP:
@@ -135,7 +138,7 @@ public class MainController {
         number.setOnMove(() -> {
             final int xDest = number.getCol() * GRID_SIZE;
             final int yDest = number.getRow() * GRID_SIZE;
-            TranslateTransition tt = new TranslateTransition(new Duration(80), tile);
+            TranslateTransition tt = new TranslateTransition(new Duration(ANIMATION_DURATION), tile);
             tt.setToX(xDest);
             tt.setToY(yDest);
             runTransition(tt);

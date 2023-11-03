@@ -28,7 +28,7 @@ public class ColorSettings {
     }
 
     private static ColorSettings createDefault() {
-        return new ColorSettings("1234", 0.3, 0.8);
+        return new ColorSettings("1234", 0.4, 0.8);
     }
 
     public static ColorSettings loadOrDefault() {

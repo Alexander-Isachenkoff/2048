@@ -46,7 +46,7 @@ public class SettingsController {
     }
 
     private void reset() {
-        colorSettings.init(AppProperties.colorSettings);
+        colorSettings.init(AppProperties.getColorSettings());
     }
 
     @FXML
@@ -57,7 +57,7 @@ public class SettingsController {
     @FXML
     void onSave() {
         colorSettings.save();
-        AppProperties.colorSettings.init(colorSettings);
+        AppProperties.getColorSettings().init(colorSettings);
         close();
     }
 
