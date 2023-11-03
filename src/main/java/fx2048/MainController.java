@@ -5,11 +5,14 @@ import fx2048.model.Number;
 import javafx.animation.ScaleTransition;
 import javafx.animation.Transition;
 import javafx.animation.TranslateTransition;
-import javafx.collections.*;
+import javafx.collections.FXCollections;
+import javafx.collections.ObservableSet;
+import javafx.collections.SetChangeListener;
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
 import javafx.scene.Scene;
 import javafx.scene.control.Label;
+import javafx.scene.input.KeyCode;
 import javafx.scene.layout.Pane;
 import javafx.stage.Modality;
 import javafx.stage.Stage;
@@ -29,6 +32,7 @@ public class MainController {
     private final ObservableSet<Transition> transitions = FXCollections.observableSet();
     private final Queue<Runnable> postTransitionActions = new ArrayDeque<>();
     private final GameModel gameModel = new GameModel();
+    private final Map<KeyCode, Runnable> keyActions = new HashMap<>();
     @FXML
     private Label scoreLabel;
     @FXML
@@ -65,26 +69,20 @@ public class MainController {
         scoreLabel.textProperty().bind(gameModel.textScoreProperty());
         recordLabel.textProperty().bind(gameModel.textRecordProperty());
 
+        keyActions.put(KeyCode.UP, gameModel::up);
+        keyActions.put(KeyCode.DOWN, gameModel::down);
+        keyActions.put(KeyCode.LEFT, gameModel::left);
+        keyActions.put(KeyCode.RIGHT, gameModel::right);
+        keyActions.put(KeyCode.R, gameModel::restart);
+
         gamePane.sceneProperty().addListener((observable, oldValue, scene) -> {
             scene.setOnKeyPressed(event -> {
-                if (!transitions.isEmpty()) {
-                    for (Transition transition : transitions) {
-                        transition.jumpTo(transition.getTotalDuration());
-                    }
+                for (Transition transition : transitions) {
+                    transition.jumpTo(transition.getTotalDuration());
                 }
-                switch (event.getCode()) {
-                    case UP:
-                        gameModel.up();
-                        break;
-                    case DOWN:
-                        gameModel.down();
-                        break;
-                    case LEFT:
-                        gameModel.left();
-                        break;
-                    case RIGHT:
-                        gameModel.right();
-                        break;
+                Runnable runnable = keyActions.get(event.getCode());
+                if (runnable != null) {
+                    runnable.run();
                 }
             });
         });

@@ -59,12 +59,8 @@ public class GameModel {
     public void up() {
         AtomicBoolean moved = new AtomicBoolean(false);
         model.stream().sorted(Comparator.comparingInt(Number::getRow)).forEach(number -> {
-            for (int row = number.getRow() - 1; row >= 0; row--) {
-                if (tryMoveTo(number, number.getCol(), row)) {
-                    moved.set(true);
-                } else {
-                    break;
-                }
+            if (tryMove(number, 0, -1)) {
+                moved.set(true);
             }
         });
         if (moved.get()) {
@@ -75,12 +71,8 @@ public class GameModel {
     public void down() {
         AtomicBoolean moved = new AtomicBoolean(false);
         model.stream().sorted((n1, n2) -> -Integer.compare(n1.getRow(), n2.getRow())).forEach(number -> {
-            for (int row = number.getRow() + 1; row < 4; row++) {
-                if (tryMoveTo(number, number.getCol(), row)) {
-                    moved.set(true);
-                } else {
-                    break;
-                }
+            if (tryMove(number, 0, 1)) {
+                moved.set(true);
             }
         });
         if (moved.get()) {
@@ -91,12 +83,8 @@ public class GameModel {
     public void left() {
         AtomicBoolean moved = new AtomicBoolean(false);
         model.stream().sorted(Comparator.comparingInt(Number::getCol)).forEach(number -> {
-            for (int col = number.getCol() - 1; col >= 0; col--) {
-                if (tryMoveTo(number, col, number.getRow())) {
-                    moved.set(true);
-                } else {
-                    break;
-                }
+            if (tryMove(number, -1, 0)) {
+                moved.set(true);
             }
         });
         if (moved.get()) {
@@ -107,12 +95,8 @@ public class GameModel {
     public void right() {
         AtomicBoolean moved = new AtomicBoolean(false);
         model.stream().sorted((n1, n2) -> -Integer.compare(n1.getCol(), n2.getCol())).forEach(number -> {
-            for (int col = number.getCol() + 1; col < 4; col++) {
-                if (tryMoveTo(number, col, number.getRow())) {
-                    moved.set(true);
-                } else {
-                    break;
-                }
+            if (tryMove(number, 1, 0)) {
+                moved.set(true);
             }
         });
         if (moved.get()) {
@@ -120,26 +104,47 @@ public class GameModel {
         }
     }
 
-    private boolean tryMoveTo(Number number, int col, int row) {
+    private boolean tryMove(Number number, int colInc, int rowInc) {
+        int newRow = number.getRow();
+        int newCol = number.getCol();
+        while (canMoveTo(number, newCol + colInc, newRow + rowInc)) {
+            newRow += rowInc;
+            newCol += colInc;
+        }
+        if (newRow != number.getRow() || newCol != number.getCol()) {
+            moveTo(number, newCol, newRow);
+            return true;
+        }
+        return false;
+    }
+
+    private void moveTo(Number number, int col, int row) {
         Optional<Number> optionalNumber = get(col, row);
         if (!optionalNumber.isPresent()) {
             number.setCol(col);
             number.setRow(row);
+        } else {
+            Number otherNumber = optionalNumber.get();
+            number.setCol(col);
+            number.setRow(row);
+            remove(number);
+            remove(otherNumber);
+            Number newNumber = new Number(otherNumber.getCol(), otherNumber.getRow(), otherNumber.getValue() * 2);
+            addNumber(newNumber);
+            addScore(newNumber.getValue());
+        }
+    }
+
+    private boolean canMoveTo(Number number, int col, int row) {
+        if (col > 3 || col < 0 || row > 3 || row < 0) {
+            return false;
+        }
+        Optional<Number> optionalNumber = get(col, row);
+        if (!optionalNumber.isPresent()) {
             return true;
         } else {
             Number otherNumber = optionalNumber.get();
-            if (otherNumber.getValue() == number.getValue()) {
-                number.setCol(col);
-                number.setRow(row);
-                remove(number);
-                remove(otherNumber);
-                Number newNumber = new Number(otherNumber.getCol(), otherNumber.getRow(), otherNumber.getValue() * 2);
-                addNumber(newNumber);
-                addScore(newNumber.getValue());
-                return true;
-            } else {
-                return false;
-            }
+            return otherNumber.getValue() == number.getValue();
         }
     }
 
