@@ -5,9 +5,7 @@ import fx2048.model.Number;
 import javafx.animation.ScaleTransition;
 import javafx.animation.Transition;
 import javafx.animation.TranslateTransition;
-import javafx.collections.FXCollections;
-import javafx.collections.ListChangeListener;
-import javafx.collections.ObservableList;
+import javafx.collections.*;
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
 import javafx.scene.Scene;
@@ -21,17 +19,15 @@ import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
-import java.util.ArrayList;
-import java.util.Collections;
-import java.util.List;
+import java.util.*;
 
 public class MainController {
 
     private static final int GRID_SIZE = 80;
     private static final double ANIMATION_DURATION = 80;
     private static final String RECORD_FILE = "record.txt";
-    private final ObservableList<Transition> transitions = FXCollections.observableArrayList();
-    private final List<Runnable> postTransitionActions = new ArrayList<>();
+    private final ObservableSet<Transition> transitions = FXCollections.observableSet();
+    private final Queue<Runnable> postTransitionActions = new ArrayDeque<>();
     private final GameModel gameModel = new GameModel();
     @FXML
     private Label scoreLabel;
@@ -93,7 +89,7 @@ public class MainController {
             });
         });
 
-        transitions.addListener((ListChangeListener<? super Transition>) c -> {
+        transitions.addListener((SetChangeListener<? super Transition>) c -> {
             if (transitions.isEmpty()) {
                 runActions();
             }
@@ -122,10 +118,9 @@ public class MainController {
     }
 
     private void runActions() {
-        for (Runnable action : postTransitionActions) {
-            action.run();
+        while (!postTransitionActions.isEmpty()) {
+            postTransitionActions.poll().run();
         }
-        postTransitionActions.clear();
     }
 
     private NumberTile addNumber(Number number) {
