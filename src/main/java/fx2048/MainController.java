@@ -74,6 +74,7 @@ public class MainController {
         keyActions.put(KeyCode.LEFT, gameModel::left);
         keyActions.put(KeyCode.RIGHT, gameModel::right);
         keyActions.put(KeyCode.R, gameModel::restart);
+        keyActions.put(KeyCode.Z, gameModel::undo);
 
         gamePane.sceneProperty().addListener((observable, oldValue, scene) -> {
             scene.setOnKeyPressed(event -> {

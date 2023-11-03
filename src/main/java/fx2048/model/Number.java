@@ -1,10 +1,10 @@
 package fx2048.model;
 
-public class Number {
+public class Number implements Cloneable {
 
     private int col;
     private int row;
-    private int value;
+    private final int value;
 
     private Runnable onMove = () -> {
     };
@@ -39,6 +39,15 @@ public class Number {
 
     public void setOnMove(Runnable onMove) {
         this.onMove = onMove;
+    }
+
+    @Override
+    public Number clone() {
+        try {
+            return (Number) super.clone();
+        } catch (CloneNotSupportedException e) {
+            throw new AssertionError();
+        }
     }
 
 }

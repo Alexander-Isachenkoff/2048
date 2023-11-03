@@ -11,17 +11,22 @@ import java.util.function.Consumer;
 public class GameModel {
 
     private final Random random = new Random();
-    private final List<Number> model = new ArrayList<>();
+    private final Set<Number> model = new HashSet<>();
     private final SimpleIntegerProperty scoreProperty = new SimpleIntegerProperty(-1);
     private final SimpleIntegerProperty recordProperty = new SimpleIntegerProperty(-1);
     private final ReadOnlyStringWrapper textScoreProperty = new ReadOnlyStringWrapper();
     private final ReadOnlyStringWrapper textRecordProperty = new ReadOnlyStringWrapper();
+    private GameModel prevState;
     private Consumer<Number> onNewNumber = number -> {
     };
     private Consumer<Number> onRemove = number -> {
     };
     private Consumer<Integer> onNewRecord = value -> {
     };
+
+    private GameModel(GameModel state) {
+        initState(state);
+    }
 
     public GameModel() {
         scoreProperty.addListener((observable, oldValue, newValue) -> {
@@ -38,6 +43,16 @@ public class GameModel {
         recordProperty.addListener((observable, oldValue, newValue) -> {
             textRecordProperty.set(String.valueOf(newValue));
         });
+    }
+
+    private void initState(GameModel gameModel) {
+        removeAll();
+        for (Number number : gameModel.model) {
+            Number cloneNumber = number.clone();
+            addNumber(cloneNumber);
+        }
+        this.scoreProperty.set(gameModel.scoreProperty.get());
+        this.recordProperty.set(gameModel.recordProperty.get());
     }
 
     private Optional<Number> get(int col, int row) {
@@ -57,6 +72,7 @@ public class GameModel {
     }
 
     public void up() {
+        GameModel prevState = new GameModel(this);
         AtomicBoolean moved = new AtomicBoolean(false);
         model.stream().sorted(Comparator.comparingInt(Number::getRow)).forEach(number -> {
             if (tryMove(number, 0, -1)) {
@@ -65,10 +81,12 @@ public class GameModel {
         });
         if (moved.get()) {
             generateRandomCell();
+            this.prevState = prevState;
         }
     }
 
     public void down() {
+        GameModel prevState = new GameModel(this);
         AtomicBoolean moved = new AtomicBoolean(false);
         model.stream().sorted((n1, n2) -> -Integer.compare(n1.getRow(), n2.getRow())).forEach(number -> {
             if (tryMove(number, 0, 1)) {
@@ -77,10 +95,12 @@ public class GameModel {
         });
         if (moved.get()) {
             generateRandomCell();
+            this.prevState = prevState;
         }
     }
 
     public void left() {
+        GameModel prevState = new GameModel(this);
         AtomicBoolean moved = new AtomicBoolean(false);
         model.stream().sorted(Comparator.comparingInt(Number::getCol)).forEach(number -> {
             if (tryMove(number, -1, 0)) {
@@ -89,10 +109,12 @@ public class GameModel {
         });
         if (moved.get()) {
             generateRandomCell();
+            this.prevState = prevState;
         }
     }
 
     public void right() {
+        GameModel prevState = new GameModel(this);
         AtomicBoolean moved = new AtomicBoolean(false);
         model.stream().sorted((n1, n2) -> -Integer.compare(n1.getCol(), n2.getCol())).forEach(number -> {
             if (tryMove(number, 1, 0)) {
@@ -101,6 +123,7 @@ public class GameModel {
         });
         if (moved.get()) {
             generateRandomCell();
+            this.prevState = prevState;
         }
     }
 
@@ -161,9 +184,14 @@ public class GameModel {
     }
 
     public void restart() {
-        new ArrayList<>(model).forEach(this::remove);
+        removeAll();
+        prevState = null;
         scoreProperty.set(0);
         generateRandomCell();
+    }
+
+    private void removeAll() {
+        new HashSet<>(model).forEach(this::remove);
     }
 
     private void remove(Number number) {
@@ -191,4 +219,12 @@ public class GameModel {
     public void setRecord(int record) {
         recordProperty.set(record);
     }
+
+    public void undo() {
+        if (prevState != null) {
+            initState(prevState);
+            prevState = null;
+        }
+    }
+
 }
