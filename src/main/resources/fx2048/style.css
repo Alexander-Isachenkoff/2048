@@ -10,13 +10,12 @@
 
 .number-tile {
     -fx-alignment: CENTER;
-    -fx-effect: dropshadow(three-pass-box, rgba(0,0,0,1), 2, 0, 0, 0);
 }
 
 .number-tile .text {
     -fx-font-smoothing-type: GRAY;
     -fx-fill: WHITE;
-    -fx-effect: dropshadow(three-pass-box, rgba(0,0,0,1), 2, 0, 0, 0);
+    -fx-effect: dropshadow(three-pass-box, rgba(0,0,0,0.8), 2, 0, 0, 0);
 }
 
 .button {
@@ -43,4 +42,12 @@
     -fx-effect: none;
     -fx-translate-y: 5;
     -fx-border-width: 1;
+}
+
+.backtile {
+    -fx-background-color: WHITE;
+    -fx-background-radius: 8;
+    -fx-background-insets: 3;
+    -fx-pref-width: 80;
+    -fx-pref-height: 80;
 }

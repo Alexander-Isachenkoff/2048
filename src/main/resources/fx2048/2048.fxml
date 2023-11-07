@@ -5,10 +5,12 @@
 <?import javafx.scene.control.Label?>
 <?import javafx.scene.layout.AnchorPane?>
 <?import javafx.scene.layout.ColumnConstraints?>
+<?import javafx.scene.layout.FlowPane?>
 <?import javafx.scene.layout.GridPane?>
 <?import javafx.scene.layout.HBox?>
 <?import javafx.scene.layout.Pane?>
 <?import javafx.scene.layout.RowConstraints?>
+<?import javafx.scene.layout.StackPane?>
 <?import javafx.scene.layout.VBox?>
 <?import javafx.scene.text.Font?>
 
@@ -62,20 +64,33 @@
             </Button>
          </children>
       </AnchorPane>
-      <VBox>
+      <StackPane>
          <children>
-            <VBox style="-fx-background-color: white; -fx-background-radius: 8; -fx-border-color: lightgray; -fx-border-radius: 8;">
+            <FlowPane prefHeight="320.0" prefWidth="320.0">
                <children>
-                  <Pane fx:id="gamePane" maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="320.0" prefWidth="320.0" />
+                  <Label styleClass="backtile" />
+                  <Label styleClass="backtile" />
+                  <Label styleClass="backtile" />
+                  <Label styleClass="backtile" />
+                  <Label styleClass="backtile" />
+                  <Label styleClass="backtile" />
+                  <Label styleClass="backtile" />
+                  <Label styleClass="backtile" />
+                  <Label styleClass="backtile" />
+                  <Label styleClass="backtile" />
+                  <Label styleClass="backtile" />
+                  <Label styleClass="backtile" />
+                  <Label styleClass="backtile" />
+                  <Label styleClass="backtile" />
+                  <Label styleClass="backtile" />
+                  <Label styleClass="backtile" />
                </children>
-               <padding>
-                  <Insets bottom="2.0" left="2.0" right="2.0" top="2.0" />
-               </padding>
-            </VBox>
+            </FlowPane>
+            <Pane fx:id="gamePane" maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="320.0" prefWidth="320.0" />
          </children>
          <padding>
             <Insets bottom="10.0" left="10.0" right="10.0" />
          </padding>
-      </VBox>
+      </StackPane>
    </children>
 </VBox>
