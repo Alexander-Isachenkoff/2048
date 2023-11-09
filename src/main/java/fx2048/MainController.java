@@ -18,9 +18,10 @@ import javafx.stage.Modality;
 import javafx.stage.Stage;
 import javafx.util.Duration;
 
+import java.io.DataInputStream;
+import java.io.DataOutputStream;
 import java.io.IOException;
 import java.nio.file.Files;
-import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.util.*;
 
@@ -28,7 +29,7 @@ public class MainController {
 
     private static final int GRID_SIZE = 80;
     private static final double ANIMATION_DURATION = 80;
-    private static final String RECORD_FILE = "record.txt";
+    private static final String RECORD_FILE = "record";
     private final ObservableSet<Transition> transitions = FXCollections.observableSet();
     private final Queue<Runnable> postTransitionActions = new ArrayDeque<>();
     private final GameModel gameModel = new GameModel();
@@ -39,6 +40,22 @@ public class MainController {
     private Label recordLabel;
     @FXML
     private Pane gamePane;
+
+    private static void saveRecord(int value) {
+        try (DataOutputStream os = new DataOutputStream(Files.newOutputStream(Paths.get(RECORD_FILE)))) {
+            os.writeInt(value);
+        } catch (IOException e) {
+            throw new RuntimeException(e);
+        }
+    }
+
+    private static int loadRecord() {
+        try (DataInputStream inputStream = new DataInputStream(Files.newInputStream(Paths.get(RECORD_FILE)))) {
+            return inputStream.readInt();
+        } catch (IOException e) {
+            return 0;
+        }
+    }
 
     @FXML
     private void initialize() {
@@ -58,13 +75,7 @@ public class MainController {
             doAfterTransitions(() -> removeNumber(number));
         });
 
-        gameModel.setOnNewRecord(value -> {
-            try {
-                Files.write(Paths.get(RECORD_FILE), Collections.singletonList(String.valueOf(value)));
-            } catch (IOException e) {
-                throw new RuntimeException(e);
-            }
-        });
+        gameModel.setOnNewRecord(MainController::saveRecord);
 
         scoreLabel.textProperty().bind(gameModel.textScoreProperty());
         recordLabel.textProperty().bind(gameModel.textRecordProperty());
@@ -94,16 +105,7 @@ public class MainController {
             }
         });
 
-        int record = 0;
-        try {
-            Path path = Paths.get(RECORD_FILE);
-            if (Files.exists(path)) {
-                record = Integer.parseInt(Files.readAllLines(path).get(0));
-            }
-        } catch (IOException e) {
-            throw new RuntimeException(e);
-        }
-        gameModel.setRecord(record);
+        gameModel.setRecord(loadRecord());
 
         gameModel.restart();
     }
