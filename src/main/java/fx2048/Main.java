@@ -14,6 +14,7 @@ public class Main extends Application {
     @Override
     public void start(Stage stage) throws Exception {
         Scene scene = new Scene(FXMLLoader.load(Main.class.getResource("2048.fxml")));
+        stage.setTitle("2048");
         stage.setScene(scene);
         stage.setResizable(false);
         stage.sizeToScene();
